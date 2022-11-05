@@ -1,0 +1,793 @@
+Basic Usage :
+	// Create a Role with only a Name
+	$role = Role::create(['name' => 'writer']);
+
+	// Create a Permission with only a Name
+	$permission = Permission::create(['name' => 'edit articles']);
+
+	// A permission can be assigned to a role using 1 of these methods:
+	$role->givePermissionTo($permission);
+	$permission->assignRole($role);
+
+	// Multiple permissions can be synced to a role using 1 of these methods:
+	$role->syncPermissions($permissions);
+	$permission->syncRoles($roles);
+
+	// A permission can be removed from a role using 1 of these methods:
+	$role->revokePermissionTo($permission);
+	$permission->removeRole($role);
+
+	// Guard_name examples ('admin','Web')
+	// To check if a user has permission for a specific guard:
+	$user->hasPermissionTo('publish articles', 'admin');
+
+	// get a list of all permissions directly assigned to the user
+	$permissionNames = $user->getPermissionNames(); // collection of name strings
+	$permissions = $user->permissions; // collection of permission objects
+
+	// get all permissions for the user, either directly, or from roles, or from both
+	$permissions = $user->getDirectPermissions();
+	$permissions = $user->getPermissionsViaRoles();
+	$permissions = $user->getAllPermissions();
+
+	// get the names of the user's roles
+	$roles = $user->getRoleNames(); // Returns a collection
+
+	// Returns only users with the role 'writer'
+	$users = User::role('writer')->get(); 
+
+	// Returns only users with the permission 'edit articles'
+	$users = User::permission('edit articles')->get(); 
+
+
+Direct Permissions :
+	$user->givePermissionTo('edit articles');
+
+	// You can also give multiple permission at once
+	$user->givePermissionTo('edit articles', 'delete articles');
+
+	// You may also pass an array
+	$user->givePermissionTo(['edit articles', 'delete articles']);
+
+	// A permission can be revoked from a user:
+	$user->revokePermissionTo('edit articles');
+
+	// Or revoke & add new permissions in one go:
+	$user->syncPermissions(['edit articles', 'delete articles']);
+
+	// You can check if a user has a permission:
+	$user->hasPermissionTo('edit articles');
+
+	// You can check if a user has Any of an array of permissions:
+	$user->hasAnyPermission(['edit articles', 'publish articles', 'unpublish articles']);
+
+	// ...or if a user has All of an array of permissions:
+	$user->hasAllPermissions(['edit articles', 'publish articles', 'unpublish articles']);
+
+	// ou can check if a user has a permission with can function:
+	$user->can('edit articles');
+
+Using Permissions via Roles :
+	$user->assignRole('writer');
+
+	// You can also assign multiple roles at once
+	$user->assignRole('writer', 'admin');
+
+	// or as an array
+	$user->assignRole(['writer', 'admin']);
+
+	// A role can be removed from a user:
+	$user->removeRole('writer');
+
+	// All current roles will be removed from the user and replaced by the array given
+	$user->syncRoles(['writer', 'admin']);
+
+	$user->hasRole('writer');
+
+	// or at least one role from an array of roles:
+	$user->hasRole(['editor', 'moderator']);
+
+	// You can also determine if a user has any of a given list of roles:
+	$user->hasAnyRole(['writer', 'reader']);
+	// or
+	$user->hasAnyRole('writer', 'reader');
+
+	// You can also determine if a user has all of a given list of roles:
+	$user->hasAllRoles(Role::all());
+
+	// You can also determine if a user has exactly all of a given list of roles:
+	$user->hasExactRoles(Role::all());
+
+	// A permission can be given to a role:
+	$role->givePermissionTo('edit articles');
+
+	// You can determine if a role has a certain permission:
+	$role->hasPermissionTo('edit articles');
+
+	// A permission can be revoked from a role:
+	$role->revokePermissionTo('edit articles');
+
+	// get collection
+	$role->permissions;
+
+	// Check if the user has Direct permission
+	$user->hasDirectPermission('edit articles')
+
+
+
+
+
+
+
+
+
+
+
+Referentiel
+	Gestions des Users (Create, Read, Update, Desactivate,reinstialiser MDP)
+	Agence Fret (Create, Read, Update)
+	Centre Fret (Create, Read, Update)
+	Client (Create, Read, Update)
+	Secteur d'activité (Create, Read, Update,delete)
+	Grand Compte (Create, Read, Update, Delete)
+	Localité (Create, Read, Update)
+	Distance Localite (Create, Read, Update)
+	Trajet Localite (Create, Read, Update)
+	Type Vehicule (Create, Read, Update)
+	Marchandise (Create, Read, Update, Delete)
+	Famille Marchandise (Create, Read, Update, Delete)
+REFERENTIEL-TR
+	Transporteur National (??????)
+	Transporteur (Create, Read, Update)
+	Dossier Transporteur (Create, Read)
+	Contrat Transporteur (Create, Read, Update, Imprimer Contrat, Imprimer Annexe)
+	Validation Contrat (Read, Valider Contrat, Refuser Contrat, Imprimer Contrat, Imprimer Annexe)
+	Contrat et Annexe (Read , Imprimer Contrat, Imprimer Annexe)
+	Fiche Chauffeur (Create, Read, Update, Delete)
+	Fiche Camion (Create, Read, Update, Delete)
+	Fiche Remorque (Create, Read, Update, Delete)
+	Générer Carte Véhicule (Read, Imprimer Pré-imprime, Imprimer A4, Imprimer A4)
+	Magnétique ChargeCarte (Read, )
+	Magnétique AssociaCarte (Read, Associer, Dissocier)
+	Anomalie VHoccupé (Read, Liberer)
+EXPLOITATION
+	Bon de commande
+		Etablir Bon de Commande (Génération Bon commande)
+		Modifier BC (Modification BC)
+		Modifier Détail BC (Read,Ajouter Detail BC, Modifier Detail BC, Supprimer Detail BC)
+		Annuler BCommande (Annuler BC, Supprimer BC)
+	Feuille Route
+		Etablir Feuil Route (Générer Feuille Route)
+		Executer Feuille de Route (Executer Feuille Route)
+		Taxer Feuille de Route (Taxer Feuille Route)
+		Annuler Feuille Route (Annuler Feuille Route)
+	Remise FRoute (Remise, Imprimer)
+	Scanner Feuille Route (Scanner et Enregistrer)
+	Changer Trajet (????????)
+	Annuler Remise FR (Annuler Remise)
+	Feuille Route Avaries (???????)
+	International Executer FRoute (???????)
+	International Annuler Taxation (Annuler)
+	Annuler Taxation FRoute (Annuler)
+	Taxation Globale (????????)
+	Ajouter Bon de Pesée (Create, Read, Update, Delete)
+	Feuille de Route Modifier (???????)
+	Feuille de Route Infos (??????)
+COORDINATION
+	Etablir Disponibilite (Enregistrer Disponibilité)
+	Rendre Disponible (Enregistrer Disponibilité)
+	Annuler Disponibilite (Annuler)
+	New Etablir Dispo (Enregistrer Disponibilité)
+	Dispo-MagnéticCarte
+		Auto-Disponibilité (Enregistrer)
+		Auto-Annuler Dispo (Enregistrer)
+		Auto-Rendre Dispo (Enregistrer)
+		Auto-Affecter FeuilRoute (Enregistrer)
+	Affecter Feuille Route (Affecter, Impr Provisoire, Impr Definitive)
+	Programmer Véhicule (Enregistrer Disponibilité)
+	Affecter Véhicule (Affecter, Impr Provisoire, Impr Definitive)
+	International Affecter FRoute (Affecter, Imprimer)
+	Annuler Affectation FR (Annuler)
+	International Annuler Affectation (Annuler)
+	Réaffecter Feuille Route (Reaffecter)
+	International Réaffecter (Reaffecter)
+	Remise Feuille Route
+		Remise FRoute (Remise, Imprimer)
+		Scanner Feuille Route (Scanner et Enregistrer)
+		Annuler Remise FR (Annuler Remise)
+	Programmation Véhicules (Lancer, Imprimer)
+	Suivi des Disponibilités (Read)
+AFFRETEMENT
+	Programmer Véhicule (Enregistrer Disponibilité)
+	Liberer Véhicule (Affecter, Impr Provisoire, Impr Definitive)
+	Affecter Véhicule (Affecter, Impr Provisoire, Impr Definitive)
+	Annuler Affectation FR (Annuler)
+	Réaffecter Feuille Route (Reaffecter)
+	Remise Feuille Route
+		Remise FRoute (Remise, Imprimer)
+		Scanner Feuille Route (Scanner et Enregistrer)
+		Annuler Remise FR (Annuler Remise)
+	Changer Chauffeur (Changer)
+	Changer Trajet (Changer)
+	Vehicule Occupé (???????)
+COMMERCIAL
+	Facture Client (Facturer)
+	Facture/FRoute (Facturer)
+	International Taxer FRoute (Taxer)
+	International Facture Client (Facturer)
+	Facture Avoir/Comp 2020 (Facture Avoir)
+	Facture Partielle (Enregistrer, Imprimer, Fact Transp)
+	Facture Retenue  (??????????)
+	Annuler Facture (Annuler)
+	Facture d'Avoir (Facture Avoir)
+REGLEMENT-COMPTA
+	Versement (Enregistrer, Modifier, Supprimer)
+	Reglement Glob-Fact (Régler et valider)
+	Suivi/Annul Reglement (Supprimer)
+	Reglement Old Fact (Régler et valider)
+	Suivi/Annul Reglement Old Fact (Supprimer)
+	Interface Comptable (Générer Interface)
+	Interface Compta-FT (Générer Interface)
+	Journal de Comptabilite (????????)
+	Interface Compta-FRoute (????????)
+REPORTING AFFRET
+REPORTING COM
+TBord Périodique
+TBord Flash 
+Prime-Journal
+
+
+
+
+
+
+
+
+
+CREATE TABLE params (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    code VARCHAR(50) NOT NULL,
+    nom VARCHAR(50) NOT NULL ,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_user BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_user BIGINT UNSIGNED NOT NULL,
+    PRIMARY KEY ( id ),
+    CONSTRAINT UC_Role UNIQUE (code,nom)
+);
+INSERT INTO params (id,code,nom) values(1,'AGEFAL','AGEFAL');
+INSERT INTO params (id,code,nom) values(1,'SNTR','SNTR Transport');
+
+
+
+
+CREATE TABLE users (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    login_user VARCHAR(50) NOT NULL,
+    password_user VARCHAR(100) NOT NULL,
+    name_user VARCHAR(100),
+    enabled BOOL NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_by BIGINT UNSIGNED NOT NULL,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY (id),
+    CONSTRAINT UC_User UNIQUE (login_user)
+);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(1,'admin',md5('admin'),'Administrateur',1,1,1);
+ALTER TABLE users ADD FOREIGN KEY (created_by) REFERENCES users(id);
+ALTER TABLE users ADD FOREIGN KEY (updated_by) REFERENCES users(id);
+ALTER TABLE users ADD FOREIGN KEY (deleted_by) REFERENCES users(id); 
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(2,'admin_ref1',md5('123'),'Administrateur Referentiel 1',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(3,'admin_ref2',md5('123'),'Administrateur Referentiel 2',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(4,'admin_ref3',md5('123'),'Administrateur Referentiel 3',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(5,'admin_ref_com1',md5('123'),'Administrateur Referentiel Commercial 1',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(6,'admin_ref_com2',md5('123'),'Administrateur Referentiel Commercial 2',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(7,'admin_ref_com3',md5('123'),'Administrateur Referentiel Commercial 3',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(8,'admin_ref_affret1',md5('123'),'Administrateur Referentiel Affretement 1',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(9,'admin_ref_affret2',md5('123'),'Administrateur Referentiel Affretement 2',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(10,'admin_ref_affret3',md5('123'),'Administrateur Referentiel Affretement 3',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(11,'exp1',md5('123'),'Exploitation User 1',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(12,'exp2',md5('123'),'Exploitation User 2',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(13,'exp3',md5('123'),'Exploitation User 3',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(14,'affret1',md5('123'),'Affretement User 1',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(15,'affret2',md5('123'),'Affretement User 2',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(16,'affret3',md5('123'),'Affretement User 3',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(17,'coord1',md5('123'),'Coordination User 1',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(18,'coord2',md5('123'),'Coordination User 2',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(19,'coord3',md5('123'),'Coordination User 3',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(20,'fact1',md5('123'),'Facturation User 1',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(21,'fact2',md5('123'),'Facturation User 2',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(22,'fact3',md5('123'),'Facturation User 3',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(23,'regl1',md5('123'),'Reglement User 1',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(24,'regl2',md5('123'),'Reglement User 2',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(25,'regl3',md5('123'),'Reglement User 3',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(26,'compta1',md5('123'),'Comptabilite User 1',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(27,'compta2',md5('123'),'Comptabilite User 2',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(28,'compta3',md5('123'),'Comptabilite User 3',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(29,'Audit1',md5('123'),'Audit User 1',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(30,'Audit2',md5('123'),'Audit User 2',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(31,'Audit3',md5('123'),'Audit User 3',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(32,'Manager1',md5('123'),'Management User 1',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(33,'Manager2',md5('123'),'Management User 2',1,1,1);
+INSERT INTO users (id,login_user,password_user,name_user,created_by,updated_by,enabled) values(34,'Manager3',md5('123'),'Management User 3',1,1,1);
+
+
+
+CREATE TABLE roles (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    guard_name VARCHAR(50) NOT NULL DEFAULT 'web',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_by BIGINT UNSIGNED NOT NULL,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY ( id ),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id),
+    CONSTRAINT UC_Role UNIQUE (name,guard_name)
+);
+INSERT INTO roles (id,name,created_by,updated_by) values(1,'ADMIN',1,1);
+INSERT INTO roles (id,name,created_by,updated_by) values(2,'ADMIN-REF',1,1);
+INSERT INTO roles (id,name,created_by,updated_by) values(3,'ADMIN-REF-COM',1,1);
+INSERT INTO roles (id,name,created_by,updated_by) values(4,'ADMIN-REF-AFF',1,1);
+INSERT INTO roles (id,name,created_by,updated_by) values(5,'EXP',1,1);
+INSERT INTO roles (id,name,created_by,updated_by) values(6,'COORD',1,1);
+INSERT INTO roles (id,name,created_by,updated_by) values(7,'AFFRET',1,1);
+INSERT INTO roles (id,name,created_by,updated_by) values(8,'FACT',1,1);
+INSERT INTO roles (id,name,created_by,updated_by) values(9,'REGL',1,1);
+INSERT INTO roles (id,name,created_by,updated_by) values(10,'COMPTA',1,1);
+INSERT INTO roles (id,name,created_by,updated_by) values(11,'AUDIT',1,1);
+INSERT INTO roles (id,name,created_by,updated_by) values(12,'MANAGER',1,1);
+
+
+
+CREATE TABLE modules (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    icon VARCHAR(50) NOT NULL,
+    guard_name VARCHAR(50) NOT NULL DEFAULT 'web',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_by BIGINT UNSIGNED NOT NULL,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY ( id ),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id),
+    CONSTRAINT UC_Module UNIQUE (name,guard_name)
+);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(1,'Referentiel Admin','ManageAccountsOutlinedIcon',1,1);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(2,'Referentiel Com','AdminPanelSettingsOutlinedIcon',1,1);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(3,'Referentiel Affret','GarageOutlinedIcon',1,1);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(4,'Exploitation','GroupsOutlinedIcon',1,1);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(5,'Coordination','GroupsOutlinedIcon',,1,1);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(6,'Affretement','GroupsOutlinedIcon',1,1);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(7,'Facturation','GroupsOutlinedIcon',1,1);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(8,'Reglement','GroupsOutlinedIcon',1,1);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(9,'Comptabilite'GroupsOutlinedIcon',',1,1);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(10,'Reporting Com','GroupsOutlinedIcon',1,1);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(11,'Reporting Affret','GroupsOutlinedIcon',1,1);
+INSERT INTO modules (id,name,icon,created_by,updated_by) values(12,'Tableau de Bord','GroupsOutlinedIcon',1,1); 
+
+
+
+
+
+CREATE TABLE permissions (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    guard_name VARCHAR(50) NOT NULL DEFAULT 'web',
+    id_module BIGINT UNSIGNED NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_by BIGINT UNSIGNED NOT NULL,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY ( id ),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id),
+    FOREIGN KEY (id_module) REFERENCES modules(id),
+    CONSTRAINT UC_Permission UNIQUE (name,guard_name)
+);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(1,'Browse_Users',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(2,'Read_User',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(3,'Edit_User',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(4,'Add_User',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(5,'Delete_User',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(6,'Browse_Roles',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(7,'Read_Role',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(8,'Edit_Role',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(9'Add_Role',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(10,'Delete_Role',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(11,'Browse_Modules',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(12,'Read_Module',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(13,'Edit_Module',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(14,'Add_Module',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(15,'Delete_Module',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(16,'Browse_Permissions',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(17,'Read_Permission',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(18,'Edit_Permission',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(19,'Add_Permission',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(20,'Delete_Permission',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(21,'Browse_Unites',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(22,'Read_Unite',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(23,'Edit_Unite',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(24,'Add_Unite',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(25,'Delete_Unite',1,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(26,'Browse_Clients',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(27,'Read_Client',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(28,'Edit_Client',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(29,'Add_Client',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(30,'Delete_Client',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(31,'Browse_Marchandises',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(32,'Read_Marchandise',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(33,'Edit_Marchandise',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(34,'Add_Marchandise',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(35,'Delete_Marchandise',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(36,'Browse_FamillesMarchandise',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(37,'Read_FamilleMarchandise',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(38,'Edit_FamilleMarchandise',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(39,'Add_FamilleMarchandise',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(40,'Delete_FamilleMarchandise',2,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(41,'Browse_Transporteurs',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(42,'Read_Transporteur',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(43,'Edit_Transporteur',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(44,'Add_Transporteur',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(45,'Delete_Transporteur',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(46,'Browse_Camions',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(47,'Read_Camion',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(48,'Edit_Camion',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(49,'Add_Camion',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(50,'Delete_Camion',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(51,'Browse_Remorques',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(52,'Read_Remorque',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(53,'Edit_Remorque',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(54,'Add_Remorque',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(55,'Delete_Remorque',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(56,'Browse_Chauffeurs',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(57,'Read_Chauffeur',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(58,'Edit_Chauffeur',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(59,'Add_Chauffeur',3,1,1);
+INSERT INTO permissions (id,name,id_module,created_by,updated_by) values(60,'Delete_Chauffeur',3,1,1);
+
+
+
+CREATE TABLE role_has_modules (
+    id_role BIGINT UNSIGNED NOT NULL,
+    id_module BIGINT UNSIGNED NOT NULL,	
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (id_role) REFERENCES roles(id),
+    FOREIGN KEY (id_module) REFERENCES modules(id),
+    CONSTRAINT PK_role_modules PRIMARY KEY (id_role,id_module)
+);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,1,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,2,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,3,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,4,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,5,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,6,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,7,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,8,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,9,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,10,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,11,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(1,12,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(2,1,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(2,10,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(2,11,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(2,12,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(3,2,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(3,10,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(4,3,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(4,11,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(5,4,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(5,10,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(6,5,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(6,10,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(6,11,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(7,6,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(7,11,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(8,7,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(8,10,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(8,11,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(9,8,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(9,10,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(9,11,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(10,9,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(10,10,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(10,11,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(11,10,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(11,11,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(11,12,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(12,10,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(12,11,1);
+INSERT INTO role_has_modules (id_role,id_module,created_by) values(12,12,1);
+
+
+
+CREATE TABLE role_has_permissions (
+    id_role BIGINT UNSIGNED NOT NULL,
+    id_permission BIGINT UNSIGNED NOT NULL,	
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (id_role) REFERENCES roles(id),
+    FOREIGN KEY (id_permission) REFERENCES permissions(id),
+    CONSTRAINT PK_role_permissions PRIMARY KEY (id_role,id_permission)
+);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,1,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,2,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,3,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,4,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,5,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,6,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,7,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,8,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,9,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,10,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,11,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,12,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,13,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,14,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,15,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,16,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,17,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,18,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,19,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,20,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,21,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,22,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,23,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,24,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,25,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,26,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,27,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,28,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,29,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,30,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,31,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,32,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,33,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,34,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,35,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,36,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,37,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,38,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,39,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,40,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,41,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,42,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,43,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,44,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,45,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,46,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,47,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,48,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,49,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,50,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,51,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,52,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,53,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,54,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,55,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,56,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,57,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,58,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,59,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(1,60,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,1,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,2,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,3,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,4,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,5,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,6,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,7,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,8,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,9,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,10,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,11,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,12,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,13,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,14,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,15,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,16,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,17,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,18,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,19,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,20,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,21,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,22,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,23,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,24,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(2,25,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,26,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,27,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,28,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,29,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,30,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,31,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,32,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,33,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,34,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,35,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,36,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,37,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,38,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,39,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(3,40,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,41,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,42,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,43,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,44,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,45,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,46,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,47,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,48,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,49,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,50,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,51,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,52,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,53,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,54,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,55,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,56,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,57,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,58,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,59,1);
+INSERT INTO role_has_permissions (id_role,id_permission,created_by) values(4,60,1);
+
+
+
+CREATE TABLE user_has_roles (
+    id_user BIGINT UNSIGNED NOT NULL,
+    id_role BIGINT UNSIGNED NOT NULL,	
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (id_user) REFERENCES users(id_user),
+    FOREIGN KEY (id_role) REFERENCES roles(id),
+    CONSTRAINT PK_user_roles PRIMARY KEY (id_user,id_role)
+);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(1,1,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(2,2,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(3,2,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(4,2,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(5,3,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(6,3,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(7,3,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(8,4,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(9,4,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(10,4,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(11,5,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(12,5,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(13,5,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(14,6,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(15,6,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(16,6,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(17,7,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(18,7,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(19,7,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(20,8,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(21,8,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(22,8,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(23,9,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(24,9,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(25,9,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(26,10,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(27,10,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(28,10,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(29,11,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(30,11,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(31,11,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(32,12,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(33,12,1);
+INSERT INTO user_has_roles (id_user,id_role,created_by) values(34,12,1);
+
+
+
+CREATE TABLE user_has_permissions (
+    id_user BIGINT UNSIGNED NOT NULL,
+    id_permission BIGINT UNSIGNED NOT NULL,	
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (id_user) REFERENCES users(id_user),
+    FOREIGN KEY (id_permission) REFERENCES permissions(id),
+    CONSTRAINT PK_user_permissions PRIMARY KEY (id_user,id_permission)
+);
+
+
+CREATE TABLE unites (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    unite_code VARCHAR(50) NOT NULL,
+    unite_name VARCHAR(50) NOT NULL,
+    unite_type VARCHAR(50) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_by BIGINT UNSIGNED NOT NULL,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY ( id ),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id),
+    CONSTRAINT UC_UniteCode UNIQUE (unite_code),
+    CONSTRAINT UC_UniteName UNIQUE (unite_name)
+);
+
+
+
+CREATE TABLE activity (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    action VARCHAR(50) NOT NULL,
+    ip VARCHAR(50) NOT NULL,
+    collection VARCHAR(50) NOT NULL,
+    item BIGINT UNSIGNED NOT NULL
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_by BIGINT UNSIGNED NOT NULL,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id),
+    PRIMARY KEY ( id )
+);
+
+CREATE TABLE sessions (
+    token VARCHAR(250) NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    expires DATETIME NOT NULL,
+    ip VARCHAR(50),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    PRIMARY KEY ( token )
+);
+
+
+CREATE TABLE user_has_unites (
+    id_user BIGINT UNSIGNED NOT NULL,
+    id_unite BIGINT UNSIGNED NOT NULL,
+    authorize BOOL NOT NULL,	
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_user BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_user BIGINT UNSIGNED NOT NULL,
+    FOREIGN KEY (id_user) REFERENCES users(id_user),
+    FOREIGN KEY (id_unite) REFERENCES unites(id),
+    CONSTRAINT PK_user_unites PRIMARY KEY (id_user,id_unite)
+);
+
+
+CREATE TABLE user_has_fretagences (
+    id_user BIGINT UNSIGNED NOT NULL,
+    id_fretagence BIGINT UNSIGNED NOT NULL,
+    authorize BOOL NOT NULL,	
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_user BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_user BIGINT UNSIGNED NOT NULL,
+    FOREIGN KEY (id_user) REFERENCES users(id_user),
+    FOREIGN KEY (id_fretagence) REFERENCES fretagence(id),
+    CONSTRAINT PK_user_roles PRIMARY KEY (id_user,id_fretagence)
+);
+
+
+
+
+	
+
+	

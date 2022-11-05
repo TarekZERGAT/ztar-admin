@@ -1,0 +1,45 @@
+users
+roles
+permissions
+activity
+files
+sessions
+
+Menu
+
+
+BREAD
+Browse
+Read
+Edit
+Add
+Delete
+
+
+if i had user table 
+we can Add a user
+we can Edit a User
+we can Delte a User
+we can Read one User
+Browse is of viewing a list of users
+
+
+Filiale
+Unite
+CF
+Module
+
+- un user appartient a une seule filiale.
+- une filiale peuve avoir plusieurs users.
+- un user peut appartenir ou pas a une seule CF(plus prioritaire que l'unité).
+- un CF contient plusieurs users.
+- un user peut appartenir ou pas a une seule Unité(plusieurs CFs).
+- une Unité contient plusieurs users.
+- un user sans CF et Sans unité appartiens a toute la filiale donc a accés a toutes les unités et toutes les CF et
+siege de la filiale.
+
+- l'application est divisé en plusieurs modules.
+- un user peut accéder a un ou plusieurs modules
+
+
+
