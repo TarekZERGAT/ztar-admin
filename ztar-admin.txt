@@ -1,45 +1,382 @@
 users
-roles
-permissions
-activity
-files
-sessions
-
-Menu
-
-
-BREAD
-Browse
-Read
-Edit
-Add
-Delete
-
-
-if i had user table 
-we can Add a user
-we can Edit a User
-we can Delte a User
-we can Read one User
-Browse is of viewing a list of users
-
-
+roles(id,name,display_name) (id,name,icon,description,ip_access,admin_access,app_access)
+permissions(id,key) (id,role,collection,action,permissions
+sessions(token,user,expires,ip,user_agent)
+menus(id,name)
+menu_items(id,menu_id,title,url,target,icon_class,color,parent_id,order)
+collections
 Filiale
 Unite
 CF
-Module
+activity(id,action,user,timestamp,ip,user_agent,collection,item)
+files
+settings(id,key,display_name,value,details,type,order,group)
 
-- un user appartient a une seule filiale.
-- une filiale peuve avoir plusieurs users.
-- un user peut appartenir ou pas a une seule CF(plus prioritaire que l'unité).
-- un CF contient plusieurs users.
-- un user peut appartenir ou pas a une seule Unité(plusieurs CFs).
-- une Unité contient plusieurs users.
-- un user sans CF et Sans unité appartiens a toute la filiale donc a accés a toutes les unités et toutes les CF et
-siege de la filiale.
-
-- l'application est divisé en plusieurs modules.
-- un user peut accéder a un ou plusieurs modules
+Un BREAD = (Browse, Read, Edit, Add, Delete)
 
 
+CREATE TABLE users (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    avatar VARCHAR(50),
+    theme VARCHAR(50),
+    Status VARCHAR(50) NOT NULL,
+    last_access DATETIME,
+    last_page VARCHAR(100),
 
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME,
+    updated_by BIGINT UNSIGNED,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY (id),
+    CONSTRAINT UC_User UNIQUE (username)
+);
+INSERT INTO users (id,first_name,last_name,username,email,password,Status,created_by) values(1,'Super','Administrateur','admin',admin@admin.com,md5('password'),'active',1);
+ALTER TABLE users ADD FOREIGN KEY (created_by) REFERENCES users(id);
+ALTER TABLE users ADD FOREIGN KEY (updated_by) REFERENCES users(id);
+ALTER TABLE users ADD FOREIGN KEY (deleted_by) REFERENCES users(id); 
+INSERT INTO users (id,first_name,last_name,username,email,password,Status,created_by) values(2,'Sites','Manger01','sites_manager01',sites_manager01@admin.com,md5('password'),'active',1);
+
+CREATE TABLE roles (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    display_name VARCHAR(50) NOT NULL,
+    guard_name VARCHAR(50) NOT NULL DEFAULT 'web',
+    admin_access TINYINT(1) NOT NULL,
+
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME,
+    updated_by BIGINT UNSIGNED,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY ( id ),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id),
+    CONSTRAINT UC_Role UNIQUE (name,guard_name)
+);
+INSERT INTO roles (id,name,display_name,admin_access,created_by) values(1,'admin','Administrateur Role',1,1);
+INSERT INTO roles (id,name,display_name,admin_access,created_by) values(2,'sites_manager','Sites Manager Role',0,1);
+
+CREATE TABLE users_roles (
+    user_id BIGINT UNSIGNED NOT NULL,
+    role_id BIGINT UNSIGNED NOT NULL,
+
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY (user_id,role_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (role_id) REFERENCES roles(id),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id)
+);
+INSERT INTO users_roles (user_id,role_id,created_by) values(1,1,1);
+INSERT INTO users_roles (user_id,role_id,created_by) values(2,2,1);
+
+CREATE TABLE collections (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    collection VARCHAR(50) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME,
+    updated_by BIGINT UNSIGNED,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY ( id ),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id),
+    CONSTRAINT UC_collection UNIQUE (collection)
+);
+INSERT INTO collections (id,collection,type,created_by) values(1,'parametre_systeme','menu',1);
+INSERT INTO collections (id,collection,type,created_by) values(2,'gestion_acces','menu',1);
+INSERT INTO collections (id,collection,type,created_by) values(3,'users','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(4,'roles','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(5,'permissions','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(6,'sessions','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(7,'menus','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(8,'menu_items','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(9,'collections','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(9,'gestion_sites','menu',1);
+INSERT INTO collections (id,collection,type,created_by) values(9,'filiales','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(9,'unites','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(9,'centres_fret','table',1);
+
+
+CREATE TABLE permissions (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    collection VARCHAR(50) NOT NULL,
+    action VARCHAR(50) NOT NULL,
+    name VARCHAR(50),
+    guard_name VARCHAR(50) NOT NULL DEFAULT 'web',
+    
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME,
+    updated_by BIGINT UNSIGNED,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY ( id ),
+    FOREIGN KEY (collection) REFERENCES collections(collection),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id),
+    CONSTRAINT UC_Permission UNIQUE (name,guard_name)
+);
+INSERT INTO permissions (id,collection,action,name,created_by) values(1,'parametre_systeme','browse','browse_parametre_systeme',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(2,'gestion_acces','browse','browse_gestion_acces',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(3,'users','browse','browse_users',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(4,'users','read','read_user',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(5,'users','edit','edit_user',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(6,'users','add','add_user',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(7,'users','delete','delete_user',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(8,'users','a1','desactivate_user',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(9,'users','a2','init_password',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(10,'users','a3',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(11,'users','a4',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(12,'users','a5',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(13,'roles','browse','browse_roles',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(14,'roles','read','read_role',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(15,'roles','edit','edit_role',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(16,'roles','add','add_role',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(17,'roles','delete','delete_role',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(18,'roles','a1',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(19,'roles','a2',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(20,'roles','a3',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(21,'roles','a4',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(22,'roles','a5',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(23,'permissions','browse','browse_permissions',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(24,'permissions','read','read_permission',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(25,'permissions','edit','edit_permission',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(26,'permissions','add','add_permission',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(27,'permissions','delete','delete_permission',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(28,'permissions','a1',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(29,'permissions','a2',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(30,'permissions','a3',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(31,'permissions','a4',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(32,'permissions','a5',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(33,'sessions','browse','browse_sessions',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(34,'sessions','read','read_session',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(35,'sessions','edit','edit_session',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(36,'sessions','add','add_session',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(37,'sessions','delete','delete_session',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(38,'sessions','a1',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(39,'sessions','a2',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(40,'sessions','a3',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(41,'sessions','a4',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(42,'sessions','a5',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(43,'menus','browse','browse_menus',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(44,'menus','read','read_menu',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(45,'menus','edit','edit_menu',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(46,'menus','add','add_menu',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(47,'menus','delete','delete_menu',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(48,'menus','a1',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(49,'menus','a2',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(50,'menus','a3',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(51,'menus','a4',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(52,'menus','a5',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(53,'menu_items','browse','browse_menu_items',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(54,'menu_items','read','read_menu_item',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(55,'menu_items','edit','edit_menu_item',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(56,'menu_items','add','add_menu_item',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(57,'menu_items','delete','delete_menu_item',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(58,'menu_items','a1',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(59,'menu_items','a2',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(60,'menu_items','a3',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(61,'menu_items','a4',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(62,'menu_items','a5',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(63,'collections','browse','browse_collections',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(64,'collections','read','read_collection',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(65,'collections','edit','edit_collection',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(66,'collections','add','add_collection',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(67,'collections','delete','delete_collection',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(68,'collections','a1',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(69,'collections','a2',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(70,'collections','a3',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(71,'collections','a4',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(72,'collections','a5',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(73,'gestion_sites','browse','browse_gestion_sites',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(74,'filialles','browse','browse_filialles',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(75,'filialles','read','read_filialle',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(76,'filialles','edit','edit_filialle',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(77,'filialles','add','add_filialle',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(78,'filialles','delete','delete_filialle',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(79,'filialles','a1',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(80,'filialles','a2',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(81,'filialles','a3',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(82,'filialles','a4',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(83,'filialles','a5',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(84,'unites','browse','browse_unites',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(85,'unites','read','read_unite',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(86,'unites','edit','edit_unite',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(87,'unites','add','add_unite',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(88,'unites','delete','delete_unite',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(89,'unites','a1',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(90,'unites','a2',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(91,'unites','a3',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(92,'unites','a4',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(93,'unites','a5',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(94,'centres_fret','browse','browse_centres_fret',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(95,'centres_fret','read','read_centre_fret',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(96,'centres_fret','edit','edit_centre_fret',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(97,'centres_fret','add','add_centre_fret',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(98,'centres_fret','delete','delete_centre_fret',1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(99,'centres_fret','a1',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(100,'centres_fret','a2',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(101,'centres_fret','a3',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(102,'centres_fret','a4',null,1);
+INSERT INTO permissions (id,collection,action,name,created_by) values(103,'centres_fret','a5',null,1);
+
+CREATE TABLE roles_permissions (
+    role_id BIGINT UNSIGNED NOT NULL,
+    permission_id BIGINT UNSIGNED NOT NULL,
+
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY (role_id,permission_id),
+    FOREIGN KEY (role_id) REFERENCES roles(id),
+    FOREIGN KEY (permission_id) REFERENCES permissions(id)
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id)
+);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,73,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,84,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,85,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,86,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,87,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,88,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,89,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,90,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,91,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,92,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,93,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,94,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,95,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,96,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,97,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,98,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,99,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,100,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,101,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,102,1);
+INSERT INTO roles_permissions (role_id,permission_id,created_by) values(2,103,1);
+
+CREATE TABLE users_permissions (
+    user_id BIGINT UNSIGNED NOT NULL,
+    permission_id BIGINT UNSIGNED NOT NULL,
+
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY (user_id,permission_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (permission_id) REFERENCES permissions(id)
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id)
+);
+INSERT INTO users_permissions (user_id,permission_id,created_by) values(2,74,1);
+
+CREATE TABLE menus (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME,
+    updated_by BIGINT UNSIGNED,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY (id),
+    CONSTRAINT UC_menu UNIQUE (name)
+);
+INSERT INTO menus(id,name,created_by) values(1,'admin',1);
+
+CREATE TABLE menu_items (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    permission_id BIGINT UNSIGNED NOT NULL,
+    menu_id BIGINT UNSIGNED NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    icon VARCHAR(100),
+    parent_id BIGINT UNSIGNED,
+    order INT UNSIGNED NOT NULL,
+    url VARCHAR(100) NOT NULL,
+
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME,
+    updated_by BIGINT UNSIGNED,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY (id),
+    CONSTRAINT UC_menu_item UNIQUE (title),
+    FOREIGN KEY (permission_id) REFERENCES permissions(id),
+    FOREIGN KEY (menu_id) REFERENCES menus(id),
+    FOREIGN KEY (parent_id) REFERENCES menu_items(id),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id)
+);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(1,1,1,'Paramètres Système',null,1,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(2,2,1,'Gestion des Accès',1,1,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(3,3,1,'Gestion des Utilisateurs',2,1,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(4,13,1,'Gestion des Roles',2,2,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(5,23,1,'Gestion des Permissions',2,3,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(6,33,1,'Les Sessions Utilisateurs',2,4,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(7,43,1,'Gestion des Menus',1,2,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(8,53,1,'Gestion des Eléments Menu',1,3,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(9,63,1,'Gestion des Collections',1,4,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(10,73,1,'Gestion des Sites',null,2,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(11,74,1,'Table des Filiales',10,1,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(12,84,1,'Table des Unités',10,2,1);
+INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(13,,1,'Table des Centres de fret',10,3,1);
+
+sessions(token,user,expires,ip,user_agent)
+CREATE TABLE sessions (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    token VARCHAR(100) NOT NULL,
+    expires DATETIME NOT NULL,
+    ip VARCHAR(50),
+    user_agent VARCHAR(50),
+
+    
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY ( id ),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id)
+);
+
+CREATE TABLE activity (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    action VARCHAR(50) NOT NULL,
+    collection VARCHAR(50) NOT NULL,
+    item VARCHAR(50),
+
+    
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT UNSIGNED NOT NULL,
+    updated_at DATETIME,
+    updated_by BIGINT UNSIGNED,
+    deleted_at DATETIME,
+    deleted_by BIGINT UNSIGNED,
+    PRIMARY KEY ( id ),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    FOREIGN KEY (deleted_by) REFERENCES users(id)
+);
