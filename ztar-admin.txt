@@ -344,7 +344,6 @@ INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_b
 INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(12,84,1,'Table des Unités',10,2,1);
 INSERT INTO menu_items (id,permission_id,menu_id,title,parent_id,order,created_by) values(13,,1,'Table des Centres de fret',10,3,1);
 
-sessions(token,user,expires,ip,user_agent)
 CREATE TABLE sessions (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     token VARCHAR(100) NOT NULL,
