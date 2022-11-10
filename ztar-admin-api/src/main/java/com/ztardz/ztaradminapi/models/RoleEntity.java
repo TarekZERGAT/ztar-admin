@@ -13,12 +13,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+public class RoleEntity extends AbstractEntity {
     @Column(name = "name", length=50, nullable=false)
     private String name;
 
@@ -30,29 +25,4 @@ public class RoleEntity {
 
     @Column(name = "admin_access", nullable=false)
     private Boolean adminAccess;
-
-    @Column(name = "created_at", nullable=false)
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-
-    @ManyToOne()
-    @JoinColumn(name = "created_by", referencedColumnName = "id",nullable = false)
-    private UserEntity createdBy;
-
-    @Column(name = "updated_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
-
-    @ManyToOne()
-    @JoinColumn(name = "updated_by", referencedColumnName = "id")
-    private UserEntity updatedBy;
-
-    @Column(name = "deleted_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date deletedAt;
-
-    @ManyToOne()
-    @JoinColumn(name = "deleted_by", referencedColumnName = "id")
-    private UserEntity deletedBy;
 }

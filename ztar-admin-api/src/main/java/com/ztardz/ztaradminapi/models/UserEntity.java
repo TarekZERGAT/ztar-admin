@@ -14,12 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+public class UserEntity extends AbstractEntity {
     @Column(name = "first_name", length=50, nullable=false)
     private String firstName;
 
@@ -50,29 +45,4 @@ public class UserEntity {
 
     @Column(name = "last_page", length=100)
     private String lastPage;
-
-    @Column(name = "created_at", nullable=false)
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-
-    @ManyToOne()
-    @JoinColumn(name = "created_by", referencedColumnName = "id",nullable = false)
-    private UserEntity createdBy;
-
-    @Column(name = "updated_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
-
-    @ManyToOne()
-    @JoinColumn(name = "updated_by", referencedColumnName = "id")
-    private UserEntity updatedBy;
-
-    @Column(name = "deleted_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date deletedAt;
-
-    @ManyToOne()
-    @JoinColumn(name = "deleted_by", referencedColumnName = "id")
-    private UserEntity deletedBy;
 }
