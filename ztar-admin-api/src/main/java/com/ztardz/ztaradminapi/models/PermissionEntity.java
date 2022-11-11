@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "permissions",uniqueConstraints = @UniqueConstraint(columnNames = {"name","guard_name"}))
@@ -27,4 +29,6 @@ public class PermissionEntity extends AbstractEntity {
     @Column(name = "guard_name", length=50, nullable=false)
     private String guardName = "web";
 
+    @ManyToMany(mappedBy = "permissions")
+    Set<UserEntity> users = new HashSet<UserEntity>();
 }

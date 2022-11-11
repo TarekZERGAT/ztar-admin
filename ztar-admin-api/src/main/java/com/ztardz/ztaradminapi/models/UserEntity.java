@@ -7,7 +7,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -45,4 +47,20 @@ public class UserEntity extends AbstractEntity {
 
     @Column(name = "last_page", length=100)
     private String lastPage;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "role_id") }
+    )
+    Set<RoleEntity> roles = new HashSet<RoleEntity>();
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "users_permissions",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "permission_id") }
+    )
+    Set<PermissionEntity> permissions = new HashSet<PermissionEntity>();
 }

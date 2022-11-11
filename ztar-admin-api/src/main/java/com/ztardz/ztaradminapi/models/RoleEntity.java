@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles",uniqueConstraints = @UniqueConstraint(columnNames = {"name","guard_name"}))
@@ -25,4 +27,7 @@ public class RoleEntity extends AbstractEntity {
 
     @Column(name = "admin_access", nullable=false)
     private Boolean adminAccess;
+
+    @ManyToMany(mappedBy = "roles")
+    Set<UserEntity> users = new HashSet<UserEntity>();
 }
