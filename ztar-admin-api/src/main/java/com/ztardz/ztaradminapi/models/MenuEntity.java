@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "sessions")
+@Table(name = "menus")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

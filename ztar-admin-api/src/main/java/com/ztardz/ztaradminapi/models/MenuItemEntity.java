@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sessions")
+@Table(name = "menu_items")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,7 +30,7 @@ public class MenuItemEntity extends AbstractEntity{
     @JoinColumn(name = "parent", referencedColumnName = "id")
     private MenuItemEntity parent;
 
-    @Column(name = "order", nullable=false)
+    @Column(name = "`order`", nullable=false)
     private Integer order;
 
     @Column(name = "url", length=100)
