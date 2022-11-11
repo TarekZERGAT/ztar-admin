@@ -31,4 +31,7 @@ public class PermissionEntity extends AbstractEntity {
 
     @ManyToMany(mappedBy = "permissions")
     Set<UserEntity> users = new HashSet<UserEntity>();
+
+    @ManyToMany(mappedBy = "permissions")
+    Set<RoleEntity> roles = new HashSet<RoleEntity>();
 }

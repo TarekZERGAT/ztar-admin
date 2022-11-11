@@ -30,4 +30,12 @@ public class RoleEntity extends AbstractEntity {
 
     @ManyToMany(mappedBy = "roles")
     Set<UserEntity> users = new HashSet<UserEntity>();
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "roles_permissions",
+            joinColumns = { @JoinColumn(name = "role_id") },
+            inverseJoinColumns = { @JoinColumn(name = "permission_id") }
+    )
+    Set<PermissionEntity> permissions = new HashSet<PermissionEntity>();
 }
