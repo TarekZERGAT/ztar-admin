@@ -12,7 +12,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MenuItemEntity extends AbstractEntity{
-
     @Column(name = "title", length=100, nullable=false, unique = true)
     private String title;
 

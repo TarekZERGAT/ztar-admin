@@ -14,12 +14,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PermissionEntity extends AbstractEntity {
-
-    /*@ManyToOne()
-    @JoinColumn(name = "collection", referencedColumnName = "id")
-    private CollectionEntity collection;
-    collection VARCHAR(50) NOT NULL,*/
-
     @Column(name = "action", length=50, nullable=false)
     private String action;
 
@@ -37,4 +31,8 @@ public class PermissionEntity extends AbstractEntity {
 
     @OneToOne(mappedBy = "permission")
     private MenuItemEntity menuItem;
+
+    @ManyToOne()
+    @JoinColumn(name = "collection", referencedColumnName = "id")
+    private CollectionEntity collection;
 }
