@@ -21,4 +21,7 @@ public class CollectionEntity extends AbstractEntity{
 
     @OneToMany(mappedBy = "collection")
     private Set<PermissionEntity> permissions;
+
+    @OneToMany(mappedBy = "collection")
+    private Set<ActivityEntity> activities;
 }

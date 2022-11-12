@@ -66,4 +66,7 @@ public class UserEntity extends AbstractEntity {
 
     @OneToMany(mappedBy="createdBy")
     private Set<SessionEntity> sessions;
+
+    @OneToMany(mappedBy="createdBy")
+    private Set<ActivityEntity> activities;
 }
