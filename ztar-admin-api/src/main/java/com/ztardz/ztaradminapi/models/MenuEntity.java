@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Set;
 
 @Entity
 @Table(name = "menus")
@@ -16,4 +18,7 @@ import javax.persistence.Table;
 public class MenuEntity extends AbstractEntity{
     @Column(name = "name", length=50, nullable=false, unique = true)
     private String name;
+
+    @OneToMany(mappedBy = "menu")
+    private Set<MenuItemEntity> menuItems;
 }
