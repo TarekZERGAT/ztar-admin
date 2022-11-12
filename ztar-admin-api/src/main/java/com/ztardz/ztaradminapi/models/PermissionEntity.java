@@ -30,8 +30,8 @@ public class PermissionEntity extends AbstractEntity {
     private String guardName = "web";
 
     @ManyToMany(mappedBy = "permissions")
-    Set<UserEntity> users = new HashSet<UserEntity>();
+    Set<UserEntity> users;
 
     @ManyToMany(mappedBy = "permissions")
-    Set<RoleEntity> roles = new HashSet<RoleEntity>();
+    Set<RoleEntity> roles;
 }

@@ -37,5 +37,5 @@ public class RoleEntity extends AbstractEntity {
             joinColumns = { @JoinColumn(name = "role_id") },
             inverseJoinColumns = { @JoinColumn(name = "permission_id") }
     )
-    Set<PermissionEntity> permissions = new HashSet<PermissionEntity>();
+    Set<PermissionEntity> permissions;
 }

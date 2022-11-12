@@ -54,7 +54,7 @@ public class UserEntity extends AbstractEntity {
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "role_id") }
     )
-    Set<RoleEntity> roles = new HashSet<RoleEntity>();
+    Set<RoleEntity> roles;
 
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
@@ -62,5 +62,8 @@ public class UserEntity extends AbstractEntity {
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "permission_id") }
     )
-    Set<PermissionEntity> permissions = new HashSet<PermissionEntity>();
+    Set<PermissionEntity> permissions;
+
+    @OneToMany(mappedBy="createdBy")
+    private Set<SessionEntity> sessions;
 }
