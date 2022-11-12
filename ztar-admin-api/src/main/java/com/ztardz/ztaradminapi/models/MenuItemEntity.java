@@ -12,13 +12,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MenuItemEntity extends AbstractEntity{
-    @ManyToOne()
-    @JoinColumn(name = "permission", referencedColumnName = "id")
-    private PermissionEntity permission;
-
-    @ManyToOne()
-    @JoinColumn(name = "menu", referencedColumnName = "id")
-    private MenuEntity menu;
 
     @Column(name = "title", length=100, nullable=false, unique = true)
     private String title;
@@ -35,4 +28,12 @@ public class MenuItemEntity extends AbstractEntity{
 
     @Column(name = "url", length=100)
     private String url;
+
+    @ManyToOne()
+    @JoinColumn(name = "menu", referencedColumnName = "id")
+    private MenuEntity menu;
+
+    @OneToOne()
+    @JoinColumn(name = "permission", referencedColumnName = "id",nullable = false)
+    private PermissionEntity permission;
 }

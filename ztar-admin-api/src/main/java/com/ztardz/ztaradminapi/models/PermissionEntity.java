@@ -34,4 +34,7 @@ public class PermissionEntity extends AbstractEntity {
 
     @ManyToMany(mappedBy = "permissions")
     Set<RoleEntity> roles;
+
+    @OneToOne(mappedBy = "permission")
+    private MenuItemEntity menuItem;
 }
