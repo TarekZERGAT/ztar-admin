@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "unites")
@@ -19,4 +18,11 @@ public class UniteEntity extends AbstractEntity{
 
     @Column(name = "name", length=50, nullable=false,unique = true)
     private String name;
+
+    @ManyToOne()
+    @JoinColumn(nullable = false)
+    private FilialeEntity filiale;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<FretCentreEntity> fretCentres;
 }
