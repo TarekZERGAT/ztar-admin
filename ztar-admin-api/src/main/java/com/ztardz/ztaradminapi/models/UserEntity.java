@@ -6,10 +6,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -39,7 +37,7 @@ public class UserEntity extends AbstractEntity {
     private String theme;
 
     @Column(name = "Status", length=50, nullable=false)
-    private String Status;
+    private String Status = "active";
 
     @Column(name = "last_access")
     @Temporal(TemporalType.TIMESTAMP)
@@ -48,25 +46,23 @@ public class UserEntity extends AbstractEntity {
     @Column(name = "last_page", length=100)
     private String lastPage;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = { @JoinColumn(name = "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "role_id") }
-    )
-    Set<RoleEntity> roles;
+    @ManyToMany(fetch = FetchType.LAZY)
+    List<RoleEntity> roles;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "users_permissions",
-            joinColumns = { @JoinColumn(name = "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "permission_id") }
-    )
-    Set<PermissionEntity> permissions;
+    @ManyToMany(fetch = FetchType.LAZY)
+    List<PermissionEntity> permissions;
 
-    @OneToMany(mappedBy="createdBy")
-    private Set<SessionEntity> sessions;
+    public void addRole(RoleEntity role){
+        this.roles.add(role);
+    }
 
-    @OneToMany(mappedBy="createdBy")
-    private Set<ActivityEntity> activities;
+    public void addPermission(PermissionEntity permission){
+        this.permissions.add(permission);
+    }
+
+    @OneToMany(mappedBy="createdBy",fetch = FetchType.LAZY)
+    private List<SessionEntity> sessions;
+
+    @OneToMany(mappedBy="createdBy",fetch = FetchType.LAZY)
+    private List<ActivityEntity> activities;
 }

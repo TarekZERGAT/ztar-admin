@@ -18,8 +18,8 @@ public class MenuItemEntity extends AbstractEntity{
     @Column(name = "icon", length=100)
     private String icon;
 
-    @ManyToOne()
-    @JoinColumn(name = "parent", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "parent")
     private MenuItemEntity parent;
 
     @Column(name = "`order`", nullable=false)
@@ -28,11 +28,9 @@ public class MenuItemEntity extends AbstractEntity{
     @Column(name = "url", length=100)
     private String url;
 
-    @ManyToOne()
-    @JoinColumn(name = "menu", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
     private MenuEntity menu;
 
-    @OneToOne()
-    @JoinColumn(name = "permission", referencedColumnName = "id",nullable = false)
+    @OneToOne(fetch = FetchType.EAGER)
     private PermissionEntity permission;
 }

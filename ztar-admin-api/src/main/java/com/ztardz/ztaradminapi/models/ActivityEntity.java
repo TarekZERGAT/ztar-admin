@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "collections")
+@Table(name = "activities")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +16,6 @@ public class ActivityEntity extends AbstractEntity{
     private String action;
 
     @ManyToOne()
-    @JoinColumn(name = "collection", referencedColumnName = "id")
     private CollectionEntity collection;
 
     @Column(name = "item_id")

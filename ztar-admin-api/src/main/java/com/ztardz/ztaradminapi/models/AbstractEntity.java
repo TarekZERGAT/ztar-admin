@@ -26,7 +26,7 @@ public abstract class AbstractEntity implements Serializable {
     private Date createdAt;
 
     @ManyToOne()
-    @JoinColumn(name = "created_by", referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "created_by", nullable = false)
     private UserEntity createdBy;
 
     @Column(name = "updated_at")
@@ -34,7 +34,7 @@ public abstract class AbstractEntity implements Serializable {
     private Date updatedAt;
 
     @ManyToOne()
-    @JoinColumn(name = "updated_by", referencedColumnName = "id")
+    @JoinColumn(name = "updated_by")
     private UserEntity updatedBy;
 
     @Column(name = "deleted_at")
@@ -42,7 +42,7 @@ public abstract class AbstractEntity implements Serializable {
     private Date deletedAt;
 
     @ManyToOne()
-    @JoinColumn(name = "deleted_by", referencedColumnName = "id")
+    @JoinColumn(name = "deleted_by")
     private UserEntity deletedBy;
 
     @Column(name = "deleted_for", length=150)

@@ -6,17 +6,16 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.*;
 
 @Entity
-@Table(name = "roles",uniqueConstraints = @UniqueConstraint(columnNames = {"name","guard_name"}))
+@Table(name = "roles")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoleEntity extends AbstractEntity {
-    @Column(name = "name", length=50, nullable=false)
+    @Column(name = "name", length=50, nullable=false,unique = true)
     private String name;
 
     @Column(name = "display_name", length=50, nullable=false)
@@ -28,14 +27,13 @@ public class RoleEntity extends AbstractEntity {
     @Column(name = "admin_access", nullable=false)
     private Boolean adminAccess;
 
-    @ManyToMany(mappedBy = "roles")
-    Set<UserEntity> users = new HashSet<UserEntity>();
+    @ManyToMany(mappedBy = "roles",fetch = FetchType.LAZY)
+    List<UserEntity> users;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "roles_permissions",
-            joinColumns = { @JoinColumn(name = "role_id") },
-            inverseJoinColumns = { @JoinColumn(name = "permission_id") }
-    )
-    Set<PermissionEntity> permissions;
+    @ManyToMany(fetch = FetchType.LAZY)
+    List<PermissionEntity> permissions;
+
+    public void addPermission(PermissionEntity permission){
+        this.permissions.add(permission);
+    }
 }

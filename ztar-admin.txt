@@ -108,10 +108,10 @@ INSERT INTO collections (id,collection,type,created_by) values(6,'sessions','tab
 INSERT INTO collections (id,collection,type,created_by) values(7,'menus','table',1);
 INSERT INTO collections (id,collection,type,created_by) values(8,'menu_items','table',1);
 INSERT INTO collections (id,collection,type,created_by) values(9,'collections','table',1);
-INSERT INTO collections (id,collection,type,created_by) values(9,'gestion_sites','menu',1);
-INSERT INTO collections (id,collection,type,created_by) values(9,'filiales','table',1);
-INSERT INTO collections (id,collection,type,created_by) values(9,'unites','table',1);
-INSERT INTO collections (id,collection,type,created_by) values(9,'centres_fret','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(10,'gestion_sites','menu',1);
+INSERT INTO collections (id,collection,type,created_by) values(11,'filiales','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(12,'unites','table',1);
+INSERT INTO collections (id,collection,type,created_by) values(13,'centres_fret','table',1);
 
 
 CREATE TABLE permissions (
