@@ -15,6 +15,23 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity extends AbstractEntity {
+
+    public UserEntity(String firstName,String lastName,String username,String email,String password){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+    public UserEntity(String firstName,String lastName,String username,String email,String password,UserEntity createdBy){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.setCreatedBy(createdBy);
+    }
+
     @Column(name = "first_name", length=50, nullable=false)
     private String firstName;
 
@@ -67,11 +84,17 @@ public class UserEntity extends AbstractEntity {
     private List<ActivityEntity> activities;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    List<FilialeEntity> filiales;
+    private List<FilialeEntity> filiales;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    List<UniteEntity> unites;
+    private List<UniteEntity> unites;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    List<FretCentreEntity> fretCentres;
+    private List<FretCentreEntity> fretCentres;
+
+    @ManyToOne()
+    private UniteEntity unite;
+
+    @ManyToOne()
+    private FretCentreEntity fretCentre;
 }

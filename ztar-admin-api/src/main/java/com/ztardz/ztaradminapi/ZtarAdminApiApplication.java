@@ -27,8 +27,7 @@ public class ZtarAdminApiApplication {
             ActivityService activityService
             ){
         return args -> {
-            UserEntity user1 = new UserEntity("Super","Administrateur","admin","admin@gmail.com", "admin",null,null,
-                    "ACTIVE",null,null,null,null,null,null);
+            UserEntity user1 = new UserEntity("Super","Administrateur","admin","admin@gmail.com", "admin");
             user1.setCreatedBy(user1);
             userService.addNewUser(user1);
             CollectionEntity colUsers = new CollectionEntity("users","table",null);
@@ -85,9 +84,7 @@ public class ZtarAdminApiApplication {
             activityService.addNewActivity(new ActivityEntity("read",collectionsCollection,centres_fretCollection.getId()),user1);
 
 
-            UserEntity user2 = new UserEntity("Sites","Manger01","sites_manager01","admin@sites_manager01.com", "123",null,null,
-                    "ACTIVE",null,null,null,null,null,null);
-            user2.setCreatedBy(user1);
+            UserEntity user2 = new UserEntity("Sites","Manger01","sites_manager01","admin@sites_manager01.com", "123",user1);
             userService.addNewUser(user2);
             activityService.addNewActivity(new ActivityEntity("add",usersCollection,user2.getId()),user1);
 
