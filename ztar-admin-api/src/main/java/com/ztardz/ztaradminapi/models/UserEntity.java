@@ -65,4 +65,13 @@ public class UserEntity extends AbstractEntity {
 
     @OneToMany(mappedBy="createdBy",fetch = FetchType.LAZY)
     private List<ActivityEntity> activities;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    List<FilialeEntity> filiales;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    List<UniteEntity> unites;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    List<FretCentreEntity> fretCentres;
 }

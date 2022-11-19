@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "fretcentres")
@@ -21,4 +22,7 @@ public class FretCentreEntity extends AbstractEntity{
     @ManyToOne()
     @JoinColumn(nullable = false)
     private UniteEntity unite;
+
+    @ManyToMany(mappedBy = "fretCentres",fetch = FetchType.LAZY)
+    List<UserEntity> users;
 }

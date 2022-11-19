@@ -21,4 +21,7 @@ public class FilialeEntity extends AbstractEntity{
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<UniteEntity> unites;
+
+    @ManyToMany(mappedBy = "filiales",fetch = FetchType.LAZY)
+    List<UserEntity> users;
 }

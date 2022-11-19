@@ -25,4 +25,7 @@ public class UniteEntity extends AbstractEntity{
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<FretCentreEntity> fretCentres;
+
+    @ManyToMany(mappedBy = "unites",fetch = FetchType.LAZY)
+    List<UserEntity> users;
 }
