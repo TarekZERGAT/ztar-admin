@@ -14,23 +14,11 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity extends AbstractEntity {
-
-    public UserEntity(String firstName,String lastName,String username,String email,String password){
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
-    public UserEntity(String firstName,String lastName,String username,String email,String password,UserEntity createdBy){
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.setCreatedBy(createdBy);
-    }
+public class UserEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "first_name", length=50, nullable=false)
     private String firstName;
@@ -54,7 +42,7 @@ public class UserEntity extends AbstractEntity {
     private String theme;
 
     @Column(name = "Status", length=50, nullable=false)
-    private String Status = "active";
+    private String Status = "ACTIVE";
 
     @Column(name = "last_access")
     @Temporal(TemporalType.TIMESTAMP)
@@ -97,4 +85,40 @@ public class UserEntity extends AbstractEntity {
 
     @ManyToOne()
     private FretCentreEntity fretCentre;
+
+    @Column(name = "created_at", nullable=false)
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @ManyToOne()
+    @JoinColumn(name = "created_by", nullable = false)
+    private UserEntity createdBy;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
+    @ManyToOne()
+    @JoinColumn(name = "updated_by")
+    private UserEntity updatedBy;
+
+    @Column(name = "deleted_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deletedAt;
+
+    @ManyToOne()
+    @JoinColumn(name = "deleted_by")
+    private UserEntity deletedBy;
+
+    @Column(name = "deleted_for", length=150)
+    private String deletedFor;
+
+    public UserEntity(String firstName,String lastName,String username,String email,String password){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 }

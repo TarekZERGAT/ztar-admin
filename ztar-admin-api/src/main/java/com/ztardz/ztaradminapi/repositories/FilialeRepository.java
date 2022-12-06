@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FilialeRepository extends JpaRepository<FilialeEntity,Integer> {
+    FilialeEntity findByCode(String code);
+    FilialeEntity findByName(String name);
 }

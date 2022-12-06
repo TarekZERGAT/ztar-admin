@@ -5,11 +5,11 @@ import com.ztardz.ztaradminapi.models.UserEntity;
 import java.util.List;
 
 public interface UserService {
-    List<UserEntity> browseAllUsers();
-    UserEntity readUserByUsername(String username);
-    UserEntity editUser(UserEntity user);
-    UserEntity addNewUser(UserEntity user);
-    void deleteUser(UserEntity user);
-    void addRoleToUser(String roleName, String userName);
-    void addPermissionToUser(String permissionName, String userName);
+    List<UserEntity> browseAllUsers(UserEntity createdBy);
+    UserEntity readUserByUsername(String username, UserEntity createdBy);
+    UserEntity editUser(UserEntity userToEdit,UserEntity createdBy);
+    UserEntity addNewUser(UserEntity userToAdd,UserEntity createdBy);
+    void deleteUser(UserEntity userToDelete,UserEntity createdBy, String motif);
+    void addRoleToUser(String roleName, String userName,UserEntity createdBy);
+    void addPermissionToUser(String permissionName, String userName,UserEntity createdBy);
 }

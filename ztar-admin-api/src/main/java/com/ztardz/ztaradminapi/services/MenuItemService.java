@@ -6,11 +6,9 @@ import com.ztardz.ztaradminapi.models.UserEntity;
 import java.util.List;
 
 public interface MenuItemService {
-    List<MenuItemEntity> browseAllMenuItems();
-    MenuItemEntity readMenuItemByTitle(String title);
-    MenuItemEntity editMenuItem(MenuItemEntity menuItem);
-    MenuItemEntity addNewMenuItem(MenuItemEntity menuItem);
-    void deleteMenuItem(MenuItemEntity menuItem);
-    void addParentToMenuItem(String parentName, String menuItemName);
-    void addPermissionToMenuItem(String permissionName, String menuItemName);
+    List<MenuItemEntity> browseAllMenuItems(UserEntity createdBy);
+    MenuItemEntity readMenuItemByTitle(String title, UserEntity createdBy);
+    MenuItemEntity editMenuItem(MenuItemEntity menuItemToEdit, UserEntity createdBy);
+    MenuItemEntity addNewMenuItem(MenuItemEntity menuItemToAdd, UserEntity createdBy);
+    void deleteMenuItem(MenuItemEntity menuItemToDelete, UserEntity createdBy, String motif);
 }

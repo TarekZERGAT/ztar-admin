@@ -6,9 +6,9 @@ import com.ztardz.ztaradminapi.models.UserEntity;
 import java.util.List;
 
 public interface MenuService {
-    List<MenuEntity> browseAllMenus();
-    MenuEntity readMenuByName(String name);
-    MenuEntity editMenu(MenuEntity menu);
-    MenuEntity addNewMenu(MenuEntity menu);
-    void deleteMenu(MenuEntity menu);
+    List<MenuEntity> browseAllMenus(UserEntity createdBy);
+    MenuEntity readMenuByName(String name, UserEntity createdBy);
+    MenuEntity editMenu(MenuEntity menuToEdit, UserEntity createdBy);
+    MenuEntity addNewMenu(MenuEntity menuToAdd, UserEntity createdBy);
+    void deleteMenu(MenuEntity menuToDelete, UserEntity createdBy, String motif);
 }

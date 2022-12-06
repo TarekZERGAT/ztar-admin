@@ -6,9 +6,9 @@ import com.ztardz.ztaradminapi.models.UserEntity;
 import java.util.List;
 
 public interface CollectionService {
-    List<CollectionEntity> browseAllCollections();
-    CollectionEntity readCollectionByName(String name);
-    CollectionEntity editCollection(CollectionEntity collection);
-    CollectionEntity addNewCollection(CollectionEntity collection);
-    void deleteCollection(CollectionEntity user);
+    List<CollectionEntity> browseAllCollections(UserEntity createdBy);
+    CollectionEntity readCollectionByName(String name,UserEntity createdBy);
+    CollectionEntity editCollection(CollectionEntity collectionToEdit,UserEntity createdBy);
+    CollectionEntity addNewCollection(CollectionEntity collectionToAdd,UserEntity createdBy);
+    void deleteCollection(CollectionEntity collectionToDelete,UserEntity createdBy, String motif);
 }

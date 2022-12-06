@@ -1,22 +1,20 @@
 package com.ztardz.ztaradminapi.services.impl;
 
-import com.ztardz.ztaradminapi.models.PermissionEntity;
-import com.ztardz.ztaradminapi.models.RoleEntity;
-import com.ztardz.ztaradminapi.models.UserEntity;
-import com.ztardz.ztaradminapi.repositories.PermissionRepository;
-import com.ztardz.ztaradminapi.repositories.RoleRepository;
-import com.ztardz.ztaradminapi.repositories.UserRepository;
+import com.ztardz.ztaradminapi.models.*;
+import com.ztardz.ztaradminapi.repositories.*;
 import com.ztardz.ztaradminapi.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Service
 @Transactional
-@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
@@ -25,44 +23,85 @@ public class UserServiceImpl implements UserService {
 
     private PermissionRepository permissionRepository;
 
-    @Override
-    public List<UserEntity> browseAllUsers() {
-        return userRepository.findAll();
+    private ActivityRepository activityRepository;
+
+    private CollectionRepository collectionRepository;
+
+    private CollectionEntity collection;
+
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PermissionRepository permissionRepository, ActivityRepository activityRepository, CollectionRepository collectionRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.permissionRepository = permissionRepository;
+        this.activityRepository = activityRepository;
+        this.collectionRepository = collectionRepository;
+        this.collection = collectionRepository.findByName("users");
     }
 
     @Override
-    public UserEntity readUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public List<UserEntity> browseAllUsers(UserEntity createdBy) {
+        List<UserEntity> users = userRepository.findAll();
+        ActivityEntity activity = new ActivityEntity("browse",collection,null,createdBy);
+        ActivityEntity savedActivity = activityRepository.save(activity);
+        return users;
     }
 
     @Override
-    public UserEntity editUser(UserEntity user) {
+    public UserEntity readUserByUsername(String username,UserEntity createdBy) {
+        UserEntity user = userRepository.findByUsername(username);
 
-        return null;
+        if((username == "admin")&&(createdBy == null)) {
+            ActivityEntity activity = new ActivityEntity("read", collection, user.getId(), user);
+            activityRepository.save(activity);
+        }else{
+            ActivityEntity activity = new ActivityEntity("read", collection, user.getId(), createdBy);
+            activityRepository.save(activity);
+        }
+        return user;
     }
 
     @Override
-    public UserEntity addNewUser(UserEntity user) {
-        return userRepository.save(user);
+    public UserEntity editUser(UserEntity userToEdit,UserEntity createdBy) {
+        userToEdit.setUpdatedAt(new Date());
+        userToEdit.setUpdatedBy(createdBy);
+        UserEntity user = userRepository.save(userToEdit);
+        ActivityEntity activity = new ActivityEntity("edit", collection, user.getId(), createdBy);
+        ActivityEntity savedActivity = activityRepository.save(activity);
+        return user;
     }
 
     @Override
-    public void deleteUser(UserEntity user) {
-
+    public UserEntity addNewUser(UserEntity userToAdd,UserEntity createdBy) {
+        userToAdd.setCreatedBy(createdBy);
+        UserEntity user = userRepository.save(userToAdd);
+        ActivityEntity activity = new ActivityEntity("add", collection, user.getId(), createdBy);
+        ActivityEntity savedActivity = activityRepository.save(activity);
+        return user;
     }
 
     @Override
-    public void addRoleToUser(String roleName, String userName) {
+    public void deleteUser(UserEntity userToDelete,UserEntity createdBy, String motif) {
+        userToDelete.setDeletedAt(new Date());
+        userToDelete.setDeletedBy(createdBy);
+        userToDelete.setDeletedFor(motif);
+        UserEntity user = userRepository.save(userToDelete);
+        ActivityEntity activity = new ActivityEntity("delete", collection, user.getId(), createdBy);
+        ActivityEntity savedActivity = activityRepository.save(activity);
+    }
+
+    @Override
+    public void addRoleToUser(String roleName, String userName,UserEntity createdBy) {
         /*userRepository.findAll().forEach(user->{
             System.out.println(user.getUsername());
             user.getRoles().forEach(role->{
                 System.out.println(role.getName());
             });
         });*/
-
         RoleEntity role = roleRepository.findByName(roleName);
         UserEntity user = userRepository.findByUsername(userName);
         user.addRole(role);
+        ActivityEntity activity = new ActivityEntity("action03", collection, user.getId(), createdBy);
+        ActivityEntity savedActivity = activityRepository.save(activity);
         //user.getRoles().add(role);
         /*List<RoleEntity> roles =  user.getRoles();
         System.out.println(roles.size());
@@ -76,13 +115,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addPermissionToUser(String permissionName, String userName) {
+    public void addPermissionToUser(String permissionName, String userName,UserEntity createdBy) {
         PermissionEntity permission = permissionRepository.findByName(permissionName);
         UserEntity user = userRepository.findByUsername(userName);
+        user.addPermission(permission);
+        ActivityEntity activity = new ActivityEntity("action04", collection, user.getId(), createdBy);
+        ActivityEntity savedActivity = activityRepository.save(activity);
         //System.out.println(user.getUsername());
         //UserEntity userCreation = user.getCreatedBy();
         //System.out.println(userCreation.getUsername());
-        user.addPermission(permission);
+
         //user.getPermissions().add(permission);
     }
 }

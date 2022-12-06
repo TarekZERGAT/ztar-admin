@@ -6,9 +6,9 @@ import com.ztardz.ztaradminapi.models.UserEntity;
 import java.util.List;
 
 public interface PermissionService {
-    List<PermissionEntity> browseAllPermissions();
-    PermissionEntity readPermissionByName(String name);
-    PermissionEntity editPermission(PermissionEntity permission);
-    PermissionEntity addNewPermission(PermissionEntity permission);
-    void deletePermission(PermissionEntity permission);
+    List<PermissionEntity> browseAllPermissions(UserEntity createdBy);
+    PermissionEntity readPermissionByName(String name, UserEntity createdBy);
+    PermissionEntity editPermission(PermissionEntity permissionToEdit, UserEntity createdBy);
+    PermissionEntity addNewPermission(PermissionEntity permissionToAdd, UserEntity createdBy);
+    void deletePermission(PermissionEntity permissionToDelete, UserEntity createdBy, String motif);
 }

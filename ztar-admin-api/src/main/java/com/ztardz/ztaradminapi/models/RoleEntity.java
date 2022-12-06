@@ -14,7 +14,12 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleEntity extends AbstractEntity {
+public class RoleEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
     @Column(name = "name", length=50, nullable=false,unique = true)
     private String name;
 
@@ -35,5 +40,39 @@ public class RoleEntity extends AbstractEntity {
 
     public void addPermission(PermissionEntity permission){
         this.permissions.add(permission);
+    }
+
+    @Column(name = "created_at", nullable=false)
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @ManyToOne()
+    @JoinColumn(name = "created_by", nullable = false)
+    private UserEntity createdBy;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
+    @ManyToOne()
+    @JoinColumn(name = "updated_by")
+    private UserEntity updatedBy;
+
+    @Column(name = "deleted_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deletedAt;
+
+    @ManyToOne()
+    @JoinColumn(name = "deleted_by")
+    private UserEntity deletedBy;
+
+    @Column(name = "deleted_for", length=150)
+    private String deletedFor;
+
+    public RoleEntity(String name,String displayName,Boolean adminAccess){
+        this.name = name;
+        this.displayName = displayName;
+        this.adminAccess = adminAccess;
     }
 }

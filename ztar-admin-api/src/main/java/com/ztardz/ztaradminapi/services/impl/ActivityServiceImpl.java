@@ -28,18 +28,17 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public ActivityEntity editActivity(ActivityEntity activity) {
+    public ActivityEntity editActivity(ActivityEntity activityToEdit) {
         return null;
     }
 
     @Override
-    public ActivityEntity addNewActivity(ActivityEntity activity, UserEntity user) {
-        activity.setCreatedBy(user);
-        return activityRepository.save(activity);
+    public ActivityEntity addNewActivity(ActivityEntity activityToAdd) {
+        return activityRepository.save(activityToAdd);
     }
 
     @Override
-    public void deleteActivity(ActivityEntity activity) {
+    public void deleteActivity(ActivityEntity activityToDelete) {
 
     }
 }

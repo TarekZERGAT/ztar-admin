@@ -8,7 +8,7 @@ import java.util.List;
 public interface ActivityService {
     List<ActivityEntity> browseAllActivities();
     ActivityEntity readActivityById(Integer id);
-    ActivityEntity editActivity(ActivityEntity activity);
-    ActivityEntity addNewActivity(ActivityEntity activity, UserEntity user);
-    void deleteActivity(ActivityEntity activity);
+    ActivityEntity editActivity(ActivityEntity activityToEdit);
+    ActivityEntity addNewActivity(ActivityEntity activityToAdd);
+    void deleteActivity(ActivityEntity activityToDelete);
 }
